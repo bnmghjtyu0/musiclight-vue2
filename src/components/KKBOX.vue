@@ -1,5 +1,8 @@
 <script lang="ts">
-import type { Oauth2TokenResponse, SearchResponse } from "@/models/kkbox-api.model";
+import type {
+  Oauth2TokenResponse,
+  SearchResponse,
+} from "@/models/kkbox-api.model";
 import axios from "axios";
 import Vue from "vue";
 
