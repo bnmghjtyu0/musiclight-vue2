@@ -21,6 +21,7 @@ export default Vue.extend({
       this.searchInput = (e.target as HTMLInputElement).value;
     },
     onSearch() {
+      console.log(this.form);
       this.searchInput = this.form.email;
     },
   },
@@ -32,7 +33,7 @@ export default Vue.extend({
 
 <template>
   <div>
-    <CustomInput labelText="Email" v-model="form.email" @enter="onSearch" />
+    <CustomInput :value="form.email" @change="onChange" />
     <button @click="onSearch">搜尋</button>
     <kkbox-search-item :search="searchInput"></kkbox-search-item>
   </div>
