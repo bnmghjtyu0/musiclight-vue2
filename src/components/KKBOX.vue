@@ -7,16 +7,22 @@ import axios from "axios";
 import Vue from "vue";
 
 interface Data {
-  searchData: SearchResponse | null;
+  kkboxSearchRes: SearchResponse | null;
 }
 
 export default Vue.extend({
-  name: "todo-item",
+  name: "kkbox-search-item",
 
   data(): Data {
     return {
-      searchData: null,
+      kkboxSearchRes: null,
     };
+  },
+  props: {
+    search: {
+      type: String,
+      required: true,
+    },
   },
   mounted() {
     const urlencoded = new URLSearchParams();
@@ -42,16 +48,26 @@ export default Vue.extend({
 
         const json = await searchRes;
 
-        this.searchData = json.data;
+        this.kkboxSearchRes = json.data;
       });
+  },
+
+  computed: {
+    getTracks() {
+      return (
+        this.kkboxSearchRes?.tracks?.data.filter(
+          (d) => d.name.indexOf(this.search) > -1
+        ) ?? []
+      );
+    },
   },
 });
 </script>
 
 <template>
-  <div v-if="searchData">
+  <div v-if="kkboxSearchRes">
     <ul>
-      <li v-for="(item, itemIndex) in searchData.tracks.data" :key="itemIndex">
+      <li v-for="(item, itemIndex) in getTracks" :key="itemIndex">
         {{ item.name }}
       </li>
     </ul>
