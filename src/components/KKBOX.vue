@@ -1,5 +1,6 @@
 <script lang="ts">
 import type {
+  Datum,
   Oauth2TokenResponse,
   SearchResponse,
 } from "@/models/kkbox-api.model";
@@ -37,28 +38,32 @@ export default Vue.extend({
         },
       })
       .then(async (response) => {
+        localStorage.setItem(
+          "accessToken",
+          JSON.stringify(
+            `${response.data.token_type} ${response.data.access_token}`
+          )
+        );
+      });
+  },
+  watch: {
+    async search(val, oldVal) {
+      if (val) {
         const searchRes = (await axios.get)<SearchResponse>(
-          "https://api.kkbox.com/v1.1/search?q=五月天&type=track&territory=TW",
-          {
-            headers: {
-              Authorization: `${response.data.token_type} ${response.data.access_token}`,
-            },
-          }
+          `https://api.kkbox.com/v1.1/search?q=${val}&type=track&territory=TW`
         );
 
         const json = await searchRes;
 
         this.kkboxSearchRes = json.data;
-      });
+      } else {
+        this.kkboxSearchRes = null;
+      }
+    },
   },
-
   computed: {
-    getTracks() {
-      return (
-        this.kkboxSearchRes?.tracks?.data.filter(
-          (d) => d.name.indexOf(this.search) > -1
-        ) ?? []
-      );
+    getTracks(): Datum[] {
+      return this.kkboxSearchRes?.tracks.data ?? [];
     },
   },
 });
@@ -68,7 +73,8 @@ export default Vue.extend({
   <div v-if="kkboxSearchRes">
     <ul>
       <li v-for="(item, itemIndex) in getTracks" :key="itemIndex">
-        {{ item.name }}
+        <img :src="item.album.images[0].url" />
+        <h4>{{ item.name }}</h4>
       </li>
     </ul>
   </div>

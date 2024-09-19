@@ -5,6 +5,14 @@ export default {
     prop: "value",
     event: "update",
   },
+  methods: {
+    onKeyUp(event) {
+      this.$emit("change", event);
+    },
+    onEnter(event) {
+      this.$emit("enter", event);
+    },
+  },
 };
 </script>
 
@@ -13,5 +21,7 @@ export default {
     type="text"
     :value="value"
     @input="$emit('update', $event.target.value)"
+    @keyup="onKeyUp"
+    v-on:keyup.enter="onEnter"
   />
 </template>
